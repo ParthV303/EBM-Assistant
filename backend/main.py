@@ -1,0 +1,29 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+from ebm_engine import ask_ebm
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class Query(BaseModel):
+    question: str
+
+@app.post("/ask")
+def ask(data: Query):
+
+    answer = ask_ebm(
+        data.question
+    )
+
+    return {
+        "answer": answer
+    }
